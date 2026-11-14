@@ -1269,10 +1269,7 @@ function renderSlip() {
     bi.innerHTML = betsBodyHTML();
     bindSlip(bi);
   }
-  if (S.sheetOpen) {
-    const sb = $('#sheetBody');
-    if (sb) { sb.innerHTML = betsBodyHTML(); bindSlip(sb); }
-  }
+  if (S.sheetOpen) renderSheet();
   renderSlipBar();
 }
 
@@ -1299,12 +1296,38 @@ function renderSlipBar() {
   const sh = $('#sheet'); if (sh && !S.slip.length && !S.sheetOpen) sh.classList.remove('open');
 }
 
+/* The phone sheet is the only way into the slip on a phone, and it used
+   to render betsBodyHTML() — the body — while the tab row lives in
+   renderSlipPanel(). So it opened straight into the slip with nothing to
+   reach My bets or History with but the close button. */
+function sheetTabsHTML() {
+  return `
+    <div class="sliptabs">
+      <button class="sliptab ${S.myBetsTab === 'slip' ? 'on' : ''}" data-mbt="slip">Bet slip${S.slip.length ? `<span class="n">${S.slip.length}</span>` : ''}</button>
+      <button class="sliptab ${S.myBetsTab === 'my' ? 'on' : ''}" data-mbt="my">My bets</button>
+      <button class="sliptab ${S.myBetsTab === 'history' ? 'on' : ''}" data-mbt="history">History</button>
+      ${S.myBetsTab === 'slip' && S.slip.length ? '<button class="clr" id="clearAll">Clear all</button>' : ''}
+    </div>`;
+}
+function renderSheet() {
+  const sb = $('#sheetBody'); if (!sb) return;
+  sb.innerHTML = sheetTabsHTML() + betsBodyHTML();
+  bindSlip(sb);
+  /* bindSlip() does not bind the tabs — that binding lives in bindPage(),
+     which never runs for the sheet. Without this they render and do
+     nothing, which is how the sheet got stuck on the slip. */
+  $$('#sheetBody [data-mbt]').forEach(b => b.onclick = () => {
+    S.myBetsTab = b.dataset.mbt; renderSlip(); bindPage();
+  });
+  const h3 = $('#sheet .sh h3');
+  if (h3) h3.textContent = S.myBetsTab === 'slip' ? 'Bet slip'
+                        : S.myBetsTab === 'history' ? 'History' : 'My bets';
+}
 function openSheet() {
   S.sheetOpen = true;
   const sh = $('#sheet');
   sh.classList.add('open');
-  $('#sheetBody').innerHTML = betsBodyHTML();
-  bindSlip($('#sheetBody'));
+  renderSheet();
 }
 
 
