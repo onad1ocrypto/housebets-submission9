@@ -22,7 +22,7 @@
 
 :root{
   /* ---- surfaces: warm paper, never blue-white ---- */
-  --page:      #F4F5F6;   /* a ledger is printed, so the sheet is near-white */
+  --page:      #0B1920;   /* the stage is Housebets navy; the sheets stay paper */
   --bar:       #FFFFFF;
   --card:      #FFFFFF;
   --card-2:    #F7F8F9;
@@ -74,20 +74,26 @@
   --gold-pale:   #E7EBEE;
   --gold-soft:   rgba(16,24,28,.08);
 
-  /* ---- the sports column: a cool panel, one step off the paper ---- */
-  --sport-bg:      #F7F8F9;
-  --sport-edge:    rgba(16,24,28,.15);
-  --sport-ink:     #46545B;
-  --sport-head:    #0F1519;
-  --sport-hover:   rgba(16,24,28,.06);
-  --sport-n-bg:    rgba(16,24,28,.09);
-  --sport-n-ink:   #46545B;
-  --sport-on-bg:   #FFFFFF;
+  /* ---- the sports column: now part of the navy stage ----------------
+     With the page behind it navy, the rail was the last large light
+     surface that was not the board itself — and it was swallowing the
+     stage, leaving about 3.5% of the width showing any navy at all. The
+     rail is navigation chrome rather than a sheet, so it joins the stage
+     and the board stays paper. Cyan keeps its two jobs here: the bar on
+     the selected row and the count badge on it. */
+  --sport-bg:      #0E2530;
+  --sport-edge:    rgba(255,255,255,.14);
+  --sport-ink:     #C3D2DA;
+  --sport-head:    #E9EFF2;
+  --sport-hover:   rgba(255,255,255,.09);
+  --sport-n-bg:    rgba(255,255,255,.13);
+  --sport-n-ink:   #D5E1E7;
+  --sport-on-bg:   #16394A;
   --sport-on-bar:  #02F7FD;
-  --sport-on-ink:  #0B1418;
+  --sport-on-ink:  #FFFFFF;
   --sport-on-n-bg: #02F7FD;
   --sport-on-n-ink:#041015;
-  --sport-thumb:   #D6DADD;
+  --sport-thumb:   #2A4A5A;
 
   /* square corners — paper and rules, not cards and shadows */
   --r-sm: 2px;
@@ -105,17 +111,32 @@
    A hairline grid, ruled the way a fixture list is ruled. No scanlines —
    that was a cathode tube, and there is no tube here.
    ========================================================================= */
+/* The stage is navy, the sheets stay paper. The gold sweep is carried as
+   one more layer of the body background rather than as an overlay: an
+   overlay at z-index 0 would sit above in-flow content, and a wash of
+   gold across the prices is exactly the wrong thing to let happen. As a
+   background layer it is underneath every surface by construction, so it
+   can never touch a number. It only animates layer five. */
+@keyframes stageSheen{
+  0%   { background-position: 0 0, 0 0, 50% 0, 50% 0, -150% 0; }
+  100% { background-position: 0 0, 0 0, 50% 0, 50% 0,  250% 0; }
+}
 body{
   background-color:var(--page);
   background-image:
-    linear-gradient(90deg, rgba(16,24,28,.028) 1px, transparent 1px),
-    linear-gradient(0deg,  rgba(16,24,28,.028) 1px, transparent 1px),
-    radial-gradient(1100px 420px at 50% -16%, rgba(0,107,117,.045), transparent 64%),
-    linear-gradient(180deg, #FAFBFB 0%, #F4F5F6 58%, #EAECEE 100%);
-  background-size: 32px 32px, 32px 32px, auto, auto;
-  background-attachment: fixed, fixed, fixed, fixed;
+    linear-gradient(90deg, rgba(255,255,255,.030) 1px, transparent 1px),
+    linear-gradient(0deg,  rgba(255,255,255,.030) 1px, transparent 1px),
+    radial-gradient(1100px 460px at 50% -18%, rgba(247,200,96,.075), transparent 66%),
+    linear-gradient(180deg, #0E2530 0%, #0B1920 56%, #081318 100%),
+    linear-gradient(105deg, transparent 36%, rgba(247,200,96,.09) 44%,
+                            rgba(247,200,96,.24) 50%, rgba(247,200,96,.09) 56%, transparent 64%);
+  background-size: 32px 32px, 32px 32px, auto, auto, 280% 100%;
+  background-attachment: fixed, fixed, fixed, fixed, fixed;
+  background-position: 0 0, 0 0, 50% 0, 50% 0, -150% 0;
+  animation: stageSheen 9s ease-in-out infinite;
   min-height:100vh;
 }
+@media (prefers-reduced-motion: reduce){ body{ animation:none; } }
 
 /* the app's own painted surfaces sit on the paper, not over it */
 .shell, .app, #app{ background:transparent !important; }
@@ -262,21 +283,24 @@ button.primary,
 }
 
 /* ---- the Live entry is lit -----------------------------------------
-   Red on paper has to go deeper than red on a screen, or it turns pink.
+   That ran the other way round on paper: "red on paper has to go deeper
+   than red on a screen, or it turns pink." #8E0A20 measured 1.67:1 once
+   the rail joined the navy stage. On navy the same rule inverts — the
+   red has to be lifted instead, or it disappears into the dark.
 ------------------------------------------------------------------- */
 .rail button.is-live{
-  color:#8E0A20 !important;
+  color:#FF8098 !important;
   background:linear-gradient(90deg, rgba(200,16,46,.10), rgba(200,16,46,.02)) !important;
   box-shadow:inset 0 0 0 1px rgba(200,16,46,.24) !important;
 }
 .rail button.is-live.on{
-  color:#7A0819 !important;
+  color:#FF9CB0 !important;
   background:linear-gradient(90deg, rgba(200,16,46,.16), rgba(0,107,117,.06)) !important;
   box-shadow:inset 2px 0 0 var(--live), 0 1px 2px rgba(16,24,28,.06) !important;
 }
 .rail button.is-live .n{
-  background:rgba(200,16,46,.14) !important;
-  color:#8E0A20 !important;
+  background:rgba(255,128,152,.18) !important;
+  color:#FFC2CD !important;
 }
 .rail button .ldot,
 .tab.is-live::after{
@@ -516,7 +540,7 @@ input[data-stake],
    ========================================================================= */
 body::before{
   background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='80' viewBox='0 0 320 80'%3E%3Cpath d='M0 54c27-24 53-24 80 0s53 24 80 0 53-24 80 0 53 24 80 0' fill='none' stroke='%23006B75' stroke-width='1.6' stroke-opacity='.10'/%3E%3Cpath d='M0 68c27-24 53-24 80 0s53 24 80 0 53-24 80 0 53 24 80 0' fill='none' stroke='%23006B75' stroke-width='1.1' stroke-opacity='.06'/%3E%3C/svg%3E") !important;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='80' viewBox='0 0 320 80'%3E%3Cpath d='M0 54c27-24 53-24 80 0s53 24 80 0 53-24 80 0 53 24 80 0' fill='none' stroke='%23F7C860' stroke-width='1.6' stroke-opacity='.13'/%3E%3Cpath d='M0 68c27-24 53-24 80 0s53 24 80 0 53-24 80 0 53 24 80 0' fill='none' stroke='%23F7C860' stroke-width='1.1' stroke-opacity='.07'/%3E%3C/svg%3E") !important;
   background-repeat:repeat !important;
   background-color:transparent !important;
 }
@@ -553,8 +577,12 @@ body::before{
   font-family:var(--led); font-size:10px; font-weight:600; letter-spacing:.07em;
   text-transform:uppercase; color:var(--ink-4);
   background:var(--card-2); border-bottom:1px solid var(--hair-2); }
+/* was var(--page), which was paper when the group band only had to be a
+   shade darker than the rows. Now that the stage is navy it would be a
+   navy band inside a white board, cutting the column the board exists to
+   keep unbroken. It takes the same pale band as the table head instead. */
 .lggroup{ display:flex; align-items:baseline; gap:8px; padding:9px 12px 5px;
-  background:var(--page); border-bottom:1px solid var(--hair); }
+  background:var(--card-2); border-bottom:1px solid var(--hair); }
 .lggroup b{ font-size:11px; font-weight:750; letter-spacing:.10em;
   text-transform:uppercase; color:var(--ink); }
 .lggroup span{ font-family:var(--led); font-size:10.5px; color:var(--ink-4);
@@ -598,3 +626,27 @@ body::before{
 .o.down.moved .owas{ opacity:1 !important; }
 .o.up.moved   .owas{ color:var(--up)   !important; }
 .o.down.moved .owas{ color:var(--down) !important; }
+
+/* ============================================================================
+   THE RAIL CATCHES THE LIGHT TOO
+   The body sweep is a background layer, so once the rail was given its
+   own opaque navy it covered the sweep and the gold was left showing in
+   a 50px margin down the left edge. The rail is the large navy surface
+   now, so it carries the same sweep as one more layer of its own
+   background — still a background, still underneath every button and
+   every label by construction, so the light moves across the panel and
+   never across a word.
+   ========================================================================= */
+@keyframes railSheen{
+  0%   { background-position: -150% 0; }
+  100% { background-position:  250% 0; }
+}
+.rail{
+  background-image:linear-gradient(105deg, transparent 36%,
+    rgba(247,200,96,.10) 44%, rgba(247,200,96,.28) 50%,
+    rgba(247,200,96,.10) 56%, transparent 64%);
+  background-size:280% 100%;
+  background-repeat:no-repeat;
+  animation:railSheen 9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce){ .rail{ animation:none; } }
