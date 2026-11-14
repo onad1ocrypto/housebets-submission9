@@ -650,3 +650,16 @@ body::before{
   animation:railSheen 9s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce){ .rail{ animation:none; } }
+
+/* ============================================================================
+   A WAY BACK OUT
+   My bets and History are rooms off the slip. The tab row will take you
+   between them, but a row of tabs reads as navigation, not as an exit —
+   and once you are reading a list of settled bets, what you look for
+   first is an arrow. It sits at the left of the sheet header and only
+   appears once you have left the slip.
+   ========================================================================= */
+.sheet .sh .sback{ width:30px; height:30px; border-radius:9px; display:grid;
+  place-items:center; margin-left:-7px; color:var(--ink-2); }
+.sheet .sh .sback:hover{ background:rgba(16,24,28,.07); color:var(--ink); }
+.sheet .sh .sback[hidden]{ display:none !important; }
